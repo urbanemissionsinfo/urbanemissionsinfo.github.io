@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Source apportionment</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <link rel="icon" href="ue.jpeg" type="image/jpeg">
@@ -17,7 +18,7 @@
             <select id="citySelect" onchange="updateHeading()"></select>
         </div>
         <div id="chart-container">
-            <svg width="500" height="500"></svg>   
+            <svg viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet"></svg>   
             <div id="legend">
                 <div class="legend-item"><span class="legend-color color-0"></span> A: Transport</div>
                 <div class="legend-item"><span class="legend-color color-1"></span> B: Residential</div>
@@ -37,13 +38,16 @@
         </a>
 
     </div>
+    <footer>
+        <p> <a href="https://urbanemissions.info/about-ueinfo/">© 2025 Urban Emissions Info LLP</a></p>
+    </footer>
  
     <script>
         const svgElement = d3.select("svg");
         const width = +svgElement.attr("width");
         const height = +svgElement.attr("height");
 
-        const outerRadius = width / 2;
+        const outerRadius = 250;//width / 2;
         const innerRadius = 100;
         const color = d3.scaleOrdinal(d3.schemeCategory10);
         const arc = d3.arc().innerRadius(innerRadius).outerRadius(outerRadius);

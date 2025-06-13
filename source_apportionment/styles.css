@@ -1,6 +1,8 @@
 html,
 body {
-  height:100%;
+overflow-x: hidden;
+margin: 0;
+padding: 0;
 }
 
 h1, h2 {
@@ -14,11 +16,19 @@ h1, h2 {
 }
 
 #chart-container {
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    gap: 20px; /* space between pie and legend */
-    margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  margin: 20px auto;
+  max-width: 900px; /* controls the max layout width */
+  width: 100%;
+}
+
+svg {
+  display: block;
+  max-width: 500px;
+  margin: 10px;
 }
 
 #legend {
@@ -26,12 +36,15 @@ h1, h2 {
     flex-direction: column;
     font-size: 20px;
     align-items: justify;
+    margin: 10px
 }
 
 .legend-item {
     display: flex;
     align-items: center;
     margin-bottom: 6px;
+    white-space: nowrap;  /* ✅ Prevent text from wrapping */
+
   }
 
   .legend-color {
@@ -97,4 +110,50 @@ hr {
   pointer-events: none;
   font-size: 16px;
   display: none;
+}
+
+footer {
+    background: #5A5A5A;
+    text-align: center;
+    font-size: 0.9em;
+    color: #ffffff;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+footer p {
+    padding-right: 10px;
+}
+
+footer a {
+    color: white;
+    padding-right: 10px;
+}
+
+@media (max-width: 600px) {
+  #chart-container {
+    flex-direction: column;
+}
+
+  #legend {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  #legend div {
+    flex: 1 1 40%; /* roughly 2 per row */
+    min-width: 120px;
+    text-align: right;
+  }
+
+  footer {
+    position: relative;
+    width: 100vw;
+  }
 }
