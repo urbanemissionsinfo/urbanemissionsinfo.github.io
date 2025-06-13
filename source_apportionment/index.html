@@ -11,11 +11,12 @@
 
 <body>
     <div id="main-container">
-        <h1 class="spacing" id="selectedHeading" class="capitalize"> Source apportionment : Agartala </h1>
         
-        <div class="spacing">
-            <label>Select a city:</label>
-            <select id="citySelect" onchange="updateHeading()"></select>
+        <h1 id="heading"> APnA City Program <br> PM2.5 Source Apportionment Results </h1>
+        
+        <div id="selectboxcontainer">
+            <label style="font-size: 1.2rem;">Select a city:</label>
+            <select id="citySelect"></select>
         </div>
         <div id="chart-container">
             <svg viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet"></svg>   
@@ -87,7 +88,7 @@
             const cityData = data.find(d => d.City === cityName);
             const pieData = sources.map(key => ({ source: key, value: cityData[key] }));
 
-            d3.select("#selectedHeading").text(`Source Apportionment: ${cityName}`);
+            //d3.select("#selectedHeading").text(`Source Apportionment: ${cityName}`);
 
             const list_2017 = [
                 "Agra", "Amritsar", "Bengaluru", "Bhopal", "Bhubaneshwar", "Chandigarh",
@@ -117,7 +118,7 @@
             newArcs.append("text")
                 .attr("class", "label")
                 .attr("text-anchor", "middle")
-                .style("display", d => d.data.value < 3 ? "none" : "block")
+                .style("display", d => d.data.value < 4 ? "none" : "block")
                 .attr("dy", "0.35em")
                 .text(d => d.data.value > 0 ? `${d.data.value}%` : '');
 
@@ -162,7 +163,7 @@
             arcs.select("text")
                 .transition().duration(750)
                 .attr("transform", d => `translate(${arc.centroid(d)})`)
-                .style("display", d => d.data.value < 3 ? "none" : "block")
+                .style("display", d => d.data.value < 4? "none" : "block")
                 .text(d => d.data.value > 0 ? `${d.data.value}%` : '');
 
             newArcs.select("text")
@@ -171,5 +172,5 @@
         });
     </script>
 
-    <script src="selectcity.js"></script>
+    <!-- <script src="selectcity.js"></script> -->
 </body>

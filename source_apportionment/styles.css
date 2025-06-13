@@ -3,10 +3,21 @@ body {
 overflow-x: hidden;
 margin: 0;
 padding: 0;
+height: 100%;
 }
 
 h1, h2 {
   font-family: 'Open Sans';
+}
+
+#heading {
+  text-align: center;
+}
+#selectboxcontainer {
+  margin: 0 20px; /* 0 top & bottom, 20px left & right */
+}
+#selectboxcontainer select {
+  font-size: 1.6rem;
 }
 
 #main-container {
@@ -121,7 +132,7 @@ footer {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    position: absolute;
+    position: relative;
     bottom: 0;
     width: 100%;
 }
