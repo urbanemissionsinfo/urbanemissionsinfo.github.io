@@ -85,7 +85,7 @@ hr {
 }
 
 .label {
-  font-size: 16px;
+  font-size: 1.5rem;
   font-weight: bold;
   fill: white;
   text-shadow: 2px 2px 2px rgba(0,0,0,0.6); /* subtle shadow for readability */
