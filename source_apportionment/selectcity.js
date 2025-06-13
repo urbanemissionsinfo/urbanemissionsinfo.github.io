@@ -1,7 +1,9 @@
+// Function to convert any String to Lower Case
 function convertToLowercase(str) {
   return str.toLowerCase();
 }
 
+// Function to check if a value is in a list
 function checkValueInList(value, list) {
   if (list.includes(value)) {
     return true;
@@ -10,10 +12,8 @@ function checkValueInList(value, list) {
   }
 }
 
-// Function to parse CSV data
+// Function to parse CSV data and add options in the select box. Select 0 option as default.
 function parseCSV(csvData) {
-    var selectBox = document.getElementById("citySelect");
-
     var lines = csvData.split("\n");
     var options = "";
 
@@ -21,7 +21,6 @@ function parseCSV(csvData) {
     for (var i = 0; i < lines.length; i++) {
     var line = lines[i].trim();
     
-
     // Add an option for each city
     if (line != "") {
         var city = line.trim();
@@ -31,14 +30,11 @@ function parseCSV(csvData) {
 
     // Set the options in the select box
     document.getElementById("citySelect").innerHTML = options;
-
     //Preselct
     document.getElementById("citySelect").selectedIndex = "0"
-
-
 }
 
-// Read and parse the CSV file
+// Function to load the CSV file
 function loadCSV() {
     fetch("data/cities.csv")
       .then(function(response) {
@@ -59,6 +55,7 @@ function loadCSV() {
 // Call the loadCSV function to fetch and populate the select box
 loadCSV();
 
+// Function to update heading and APNA Leaflet URL after selecting a city
 function updateHeading() {
   var cityElement = document.getElementById("citySelect");
   var city_selected = cityElement.value;
@@ -78,13 +75,9 @@ function updateHeading() {
   } else{
     apna_href_Element.href = "https://urbanemissions.info/wp-content/uploads/apna/docs/india_apna_"+'2019'+"_"+convertToLowercase(city_selected)+".pdf";
   }
-
-  
   
   var source_apportionment_Element = document.getElementById("source_apportionment");
   source_apportionment_Element.src = "plots/"+city_selected+"_source_apportionment_pie.svg";
-
-  
 }
 
 const capitalizeFirstLetter = (inputString = "") => {

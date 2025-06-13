@@ -1,24 +1,171 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Source apportionment</title>
-  <link rel="icon" href="ue.jpeg" type="image/jpeg">
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="utf-8">
+    <title>Source apportionment</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="icon" href="ue.jpeg" type="image/jpeg">
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <h1 class="spacing" id="selectedHeading" class="capitalize"> Source apportionment : Agartala </h1>
-    
-    <div class="spacing">
-        <label for="citySelect">Select a city:</label>
-        <select id="citySelect" onchange="updateHeading()"></select>
+    <div id="main-container">
+        <h1 class="spacing" id="selectedHeading" class="capitalize"> Source apportionment : Agartala </h1>
         
-    </div>    
-    
-    <iframe id="source_apportionment" src="plots/Agartala_source_apportionment_pie.svg"></iframe>
-    <a id="apna_href" href="https://urbanemissions.info/wp-content/uploads/apna/docs/india_apna_2019_agartala.pdf" target="_blank">
-      <p> Download APnA Leaflet </p>
-    </a>
+        <div class="spacing">
+            <label>Select a city:</label>
+            <select id="citySelect" onchange="updateHeading()"></select>
+        </div>
+        <div id="chart-container">
+            <svg width="500" height="500"></svg>   
+            <div id="legend">
+                <div class="legend-item"><span class="legend-color color-0"></span> A: Transport</div>
+                <div class="legend-item"><span class="legend-color color-1"></span> B: Residential</div>
+                <div class="legend-item"><span class="legend-color color-2"></span> C: Industrial</div>
+                <div class="legend-item"><span class="legend-color color-3"></span> D: Dust</div>
+                <div class="legend-item"><span class="legend-color color-4"></span> E: Waste Burning</div>
+                <div class="legend-item"><span class="legend-color color-5"></span> F: Diesel Gensets</div>
+                <div class="legend-item"><span class="legend-color color-6"></span> G: Brick Kiln</div>
+                <div class="legend-item"><span class="legend-color color-7"></span> H: Sea Salt</div>
+                <div class="legend-item"><span class="legend-color color-8"></span> I: External</div>
+            </div>
+        </div>
+        <div id="tooltip"></div>
+
+        <a id="apna_href" href="https://urbanemissions.info/wp-content/uploads/apna/docs/india_apna_2019_agartala.pdf" target="_blank">
+            <p> Download APnA Leaflet </p>
+        </a>
+
+    </div>
+ 
+    <script>
+        const svgElement = d3.select("svg");
+        const width = +svgElement.attr("width");
+        const height = +svgElement.attr("height");
+
+        const outerRadius = width / 2;
+        const innerRadius = 100;
+        const color = d3.scaleOrdinal(d3.schemeCategory10);
+        const arc = d3.arc().innerRadius(innerRadius).outerRadius(outerRadius);
+        const pie = d3.pie().value(d => d.value);
+        const svg = d3.select("svg")
+                        .append("g")
+                        .attr("transform", `translate(${outerRadius}, ${outerRadius})`);
+
+        const legendContainer = d3.select("#legend");
+
+        d3.csv("data\\APnA_50airsheds_PM25_Source_Apportionment_CAMxOutputs.csv").then(data => {
+            const sources = ["Transport", "Residential", "Industrial", "Dust",
+                             "Waste", "Diesel Genset", "Brick Kiln", "Sea Salt", "External"];
+            data.forEach(d => {
+            sources.forEach(k => {
+                d[k] = d[k] ? parseFloat(d[k].replace('%','')) : 0;
+            });
+            });
+
+            const select = d3.select("#citySelect");
+            data.sort((a, b) => a.City.localeCompare(b.City));
+            select.selectAll("option")
+            .data(data)
+            .enter()
+            .append("option")
+            .attr("value", d => d.City)
+            .text(d => d.City);
+
+            select.property("value", "Agartala");
+            updateChart("Agartala");
+
+            select.on("change", function () {
+            updateChart(this.value);
+            });
+
+            function updateChart(cityName) {
+            const cityData = data.find(d => d.City === cityName);
+            const pieData = sources.map(key => ({ source: key, value: cityData[key] }));
+
+            d3.select("#selectedHeading").text(`Source Apportionment: ${cityName}`);
+
+            const list_2017 = [
+                "Agra", "Amritsar", "Bengaluru", "Bhopal", "Bhubaneshwar", "Chandigarh",
+                "Chennai", "Coimbatore", "Dehradun", "Indore", "Jaipur", "Kanpur", "Kochi",
+                "Ludhiana", "Nagpur", "Patna", "Pune", "Raipur", "Ranchi", "Varanasi"
+            ];
+            const is2017 = list_2017.includes(cityName);
+            const year = is2017 ? '2017' : '2019';
+            const fileCityName = cityName.toLowerCase().replace(/\s+/g, '-');
+            document.getElementById("apna_href").href =
+                `https://urbanemissions.info/wp-content/uploads/apna/docs/india_apna_${year}_${fileCityName}.pdf`;
+
+            // Join new data
+            const arcs = svg.selectAll("g.arc")
+                            .data(pie(pieData));
+            // Exit
+            arcs.exit().remove();
+            // Enter
+            const newArcs = arcs.enter()
+                .append("g")
+                .attr("class", "arc");
+
+            newArcs.append("path")
+                .attr("fill", (d, i) => color(i))
+                .attr("d", arc);
+
+            newArcs.append("text")
+                .attr("class", "label")
+                .attr("text-anchor", "middle")
+                .style("display", d => d.data.value < 3 ? "none" : "block")
+                .attr("dy", "0.35em")
+                .text(d => d.data.value > 0 ? `${d.data.value}%` : '');
+
+            // TOOLTIP
+            const tooltip = d3.select("#tooltip");
+            svg.selectAll("path")
+                .on("mouseover", function (event, d) {
+                    tooltip
+                        .style("display", "block")
+                        .html(`<strong>Pollution Source: ${d.data.source}</strong><br> Contribution: ${d.data.value}%`);
+                })
+                .on("mousemove", function (event) {
+                    const tooltipWidth = tooltip.node().offsetWidth;
+                    const tooltipHeight = tooltip.node().offsetHeight;
+
+                    const svgRect = d3.select("svg").node().getBoundingClientRect();
+                    const mouseX = event.clientX - svgRect.left;
+                    const mouseY = event.clientY - svgRect.top;
+
+                    const centerX = svgRect.width / 2;
+                    const isRightSide = mouseX > centerX;
+
+                    const pageX = event.pageX;
+                    const pageY = event.pageY;
+
+                    tooltip
+                    .style("left", isRightSide ? (pageX + 15) + "px" : (pageX - tooltipWidth - 15) + "px")
+                    .style("top", (pageY - tooltipHeight / 2) + "px");
+                })
+                .on("mouseout", function () {
+                    tooltip.style("display", "none");
+                });
+
+
+
+            // Update
+            arcs.select("path")
+                .transition().duration(750)
+                .attr("d", arc)
+                .attr("fill", (d, i) => color(i));
+
+            arcs.select("text")
+                .transition().duration(750)
+                .attr("transform", d => `translate(${arc.centroid(d)})`)
+                .style("display", d => d.data.value < 3 ? "none" : "block")
+                .text(d => d.data.value > 0 ? `${d.data.value}%` : '');
+
+            newArcs.select("text")
+                .attr("transform", d => `translate(${arc.centroid(d)})`);
+            }
+        });
+    </script>
+
     <script src="selectcity.js"></script>
 </body>
-</html>
