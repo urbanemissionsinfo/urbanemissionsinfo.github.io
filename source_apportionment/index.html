@@ -22,67 +22,63 @@
             <p> Download APnA Leaflet </p>
         </a>
         <div id="chart-container">
+            
             <div class="chart-block">
                 <h2>Baseline Source Apportionment</h2>
                 <svg viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet"></svg>
-            </div>   
-            <!-- <div id="legend">
-                <div class="legend-item"><span class="legend-color color-0"></span>Transport</div>
-                <div class="legend-item"><span class="legend-color color-1"></span>Residential</div>
-                <div class="legend-item"><span class="legend-color color-2"></span>Industrial</div>
-                <div class="legend-item"><span class="legend-color color-3"></span>Dust</div>
-                <div class="legend-item"><span class="legend-color color-4"></span>Waste Burning</div>
-                <div class="legend-item"><span class="legend-color color-5"></span>Diesel Gensets</div>
-                <div class="legend-item"><span class="legend-color color-6"></span>Brick Kiln</div>
-                <div class="legend-item"><span class="legend-color color-7"></span>Sea Salt</div>
-                <div class="legend-item"><span class="legend-color color-8"></span>External</div>
-            </div> -->
+            </div>
         
-        <div id="scroll-container">
-            <h3 style="text-align: center;">Reduce Source Contributions by</h2>
-            <div class="slider-group">
-                <label for="slider-transport"><span class="legend-color color-0"></span>Transport (<span class="value-label" id="value-slider-transport">0</span>%)</label>
-                <input type="range" id="slider-transport" min="0" max="100" value="0">
-                
+            <div id="scroll-container">
+                <h3 style="display: inline-flex; align-items: center;">
+                    <div class="hover-tooltip">
+                        Reduce Source Contributions ℹ️
+                        <span class="tooltip-text">Use the sliders to simulate reducing pollution from each source.</span>
+                    </div>
+                </h3>
+
+                <div class="slider-group">
+                    <label for="slider-transport"><span class="legend-color color-0"></span>Transport (<span class="value-label" id="value-slider-transport">0</span>%)</label>
+                    <input type="range" id="slider-transport" min="0" max="100" value="0">
+                    
+                </div>
+                <div class="slider-group">
+                    <label for="slider-residential"><span class="legend-color color-1"></span>Residential(<span class="value-label" id="value-slider-residential">0</span>%)</label>
+                    <input type="range" id="slider-residential" min="0" max="100" value="0">
+                </div>
+                <div class="slider-group">
+                    <label for="slider-industrial"><span class="legend-color color-2"></span>Industrial(<span class="value-label" id="value-slider-industrial">0</span>%)</label>
+                    <input type="range" id="slider-industrial" min="0" max="100" value="0">
+                </div>
+                <div class="slider-group">
+                    <label for="slider-dust"><span class="legend-color color-3"></span>Dust(<span class="value-label" id="value-slider-dust">0</span>%)</label>
+                    <input type="range" id="slider-dust" min="0" max="100" value="0">
+                </div>
+                <div class="slider-group">
+                    <label for="slider-waste"><span class="legend-color color-4"></span>Waste Burning(<span class="value-label" id="value-slider-waste">0</span>%)</label>
+                    <input type="range" id="slider-waste" min="0" max="100" value="0">
+                </div>
+                <div class="slider-group">
+                    <label for="slider-diesel"><span class="legend-color color-5"></span>Diesel Gensets(<span class="value-label" id="value-slider-diesel">0</span>%)</label>
+                    <input type="range" id="slider-diesel" min="0" max="100" value="0">
+                </div>
+                <div class="slider-group">
+                    <label for="slider-brick"><span class="legend-color color-6"></span>Brick Kiln(<span class="value-label" id="value-slider-brick">0</span>%)</label>
+                    <input type="range" id="slider-brick" min="0" max="100" value="0">
+                </div>
+                <div class="slider-group">
+                    <label for="slider-sea"><span class="legend-color color-7"></span>Sea Salt(<span class="value-label" id="value-slider-sea">0</span>%)</label>
+                    <input type="range" id="slider-sea" min="0" max="100" value="0">
+                </div>
+                <div class="slider-group">
+                    <label for="slider-external"><span class="legend-color color-8"></span>External(<span class="value-label" id="value-slider-external">0</span>%)</label>
+                    <input type="range" id="slider-external" min="0" max="100" value="0">
+                </div>
             </div>
-            <div class="slider-group">
-                <label for="slider-residential"><span class="legend-color color-1"></span>Residential(<span class="value-label" id="value-slider-residential">0</span>%)</label>
-                <input type="range" id="slider-residential" min="0" max="100" value="0">
-            </div>
-            <div class="slider-group">
-                <label for="slider-industrial"><span class="legend-color color-2"></span>Industrial(<span class="value-label" id="value-slider-industrial">0</span>%)</label>
-                <input type="range" id="slider-industrial" min="0" max="100" value="0">
-            </div>
-            <div class="slider-group">
-                <label for="slider-dust"><span class="legend-color color-3"></span>Dust(<span class="value-label" id="value-slider-dust">0</span>%)</label>
-                <input type="range" id="slider-dust" min="0" max="100" value="0">
-            </div>
-            <div class="slider-group">
-                <label for="slider-waste"><span class="legend-color color-4"></span>Waste Burning(<span class="value-label" id="value-slider-waste">0</span>%)</label>
-                <input type="range" id="slider-waste" min="0" max="100" value="0">
-            </div>
-            <div class="slider-group">
-                <label for="slider-diesel"><span class="legend-color color-5"></span>Diesel Gensets(<span class="value-label" id="value-slider-diesel">0</span>%)</label>
-                <input type="range" id="slider-diesel" min="0" max="100" value="0">
-            </div>
-            <div class="slider-group">
-                <label for="slider-brick"><span class="legend-color color-6"></span>Brick Kiln(<span class="value-label" id="value-slider-brick">0</span>%)</label>
-                <input type="range" id="slider-brick" min="0" max="100" value="0">
-            </div>
-            <div class="slider-group">
-                <label for="slider-sea"><span class="legend-color color-7"></span>Sea Salt(<span class="value-label" id="value-slider-sea">0</span>%)</label>
-                <input type="range" id="slider-sea" min="0" max="100" value="0">
-            </div>
-            <div class="slider-group">
-                <label for="slider-external"><span class="legend-color color-8"></span>External(<span class="value-label" id="value-slider-external">0</span>%)</label>
-                <input type="range" id="slider-external" min="0" max="100" value="0">
-            </div>
-        </div>
-    <div class="chart-block">
+
+            <div class="chart-block">
                 <h2>Source Apportionment with Controls</h2>
                 <svg id="adjusted-chart" viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet"></svg>
             </div> 
-    
         </div>
     
         <div id="tooltip"></div>
@@ -93,14 +89,14 @@
     </footer>
  
     <script>
-        const outerRadius = 250;
+        const outerRadius = 245;
         const innerRadius = 100;
         const color = d3.scaleOrdinal(d3.schemeCategory10);
         const arc = d3.arc().innerRadius(innerRadius).outerRadius(outerRadius);
         const pie = d3.pie().value(d => d.value);
         const svg = d3.select("svg")
                         .append("g")
-                        .attr("transform", `translate(${outerRadius}, ${outerRadius})`);
+                        .attr("transform", `translate(250, 250)`);
 
         const legendContainer = d3.select("#legend");
         const sources = ["Transport", "Residential", "Industrial", "Dust",
@@ -181,19 +177,10 @@
                 .on("mousemove", function (event) {
                     const tooltipWidth = tooltip.node().offsetWidth;
                     const tooltipHeight = tooltip.node().offsetHeight;
-
-                    const svgRect = d3.select("svg").node().getBoundingClientRect();
-                    const mouseX = event.clientX - svgRect.left;
-                    const mouseY = event.clientY - svgRect.top;
-
-                    const centerX = svgRect.width / 2;
-                    const isRightSide = mouseX > centerX;
-
                     const pageX = event.pageX;
                     const pageY = event.pageY;
-
                     tooltip
-                    .style("left", isRightSide ? (pageX + 15) + "px" : (pageX - tooltipWidth - 15) + "px")
+                    .style("left", (pageX + 15) + "px")
                     .style("top", (pageY - tooltipHeight / 2) + "px");
                 })
                 .on("mouseout", function () {
@@ -233,11 +220,6 @@
 
         function drawAdjustedChart() {
                 const adjustedSvg = d3.select("#adjusted-chart");
-                const width = 500;
-                const height = 500;
-                const innerRadius = 100;
-                const outerRadius = 250;
-
                 const reductions = sliderIds.map(id => {
                     const slider = document.getElementById(id);
                     return slider ? parseFloat(slider.value) : 0;
@@ -259,9 +241,9 @@
                 // Create group if not already
                 let g = adjustedSvg.select("g");
                 if (g.empty()) {
-                    adjustedSvg.attr("viewBox", `0 0 ${width} ${height}`);
+                    adjustedSvg.attr("viewBox", `0 0 500 500`);
                     g = adjustedSvg.append("g")
-                        .attr("transform", `translate(${width / 2}, ${height / 2})`);
+                        .attr("transform", `translate(250, 250)`);
                 }
 
                 // JOIN
@@ -279,22 +261,17 @@
                     .on("mouseover", function (event, d) {
                         d3.select("#tooltip")
                             .style("display", "block")
-                            .html(`<strong>Pollution Source: ${d.data.source}</strong><br> Adjusted: ${d.data.value.toFixed(1)}%`);
+                            .html(`<strong>Pollution Source: ${d.data.source}</strong><br> Contribution: ${d.data.value.toFixed(1)}%`);
                     })
                     .on("mousemove", function (event) {
                         const tooltip = d3.select("#tooltip");
                         const tooltipWidth = tooltip.node().offsetWidth;
                         const tooltipHeight = tooltip.node().offsetHeight;
-                        const svgRect = adjustedSvg.node().getBoundingClientRect();
-                        const mouseX = event.clientX - svgRect.left;
-                        const mouseY = event.clientY - svgRect.top;
-                        const centerX = svgRect.width / 2;
-                        const isRightSide = mouseX > centerX;
                         const pageX = event.pageX;
                         const pageY = event.pageY;
 
                         tooltip
-                            .style("left", isRightSide ? (pageX + 15) + "px" : (pageX - tooltipWidth - 15) + "px")
+                            .style("left", (pageX + 15) + "px")
                             .style("top", (pageY - tooltipHeight / 2) + "px");
                     })
                     .on("mouseout", function () {
