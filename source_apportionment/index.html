@@ -18,9 +18,15 @@
             <label style="font-size: 1.2rem;">Select a city:</label>
             <select id="citySelect"></select>
         </div>
+        <a id="apna_href" href="https://urbanemissions.info/wp-content/uploads/apna/docs/india_apna_2019_agartala.pdf" target="_blank">
+            <p> Download APnA Leaflet </p>
+        </a>
         <div id="chart-container">
-            <svg viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet"></svg>   
-            <div id="legend">
+            <div class="chart-block">
+                <h2>Baseline Source Apportionment</h2>
+                <svg viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet"></svg>
+            </div>   
+            <!-- <div id="legend">
                 <div class="legend-item"><span class="legend-color color-0"></span>Transport</div>
                 <div class="legend-item"><span class="legend-color color-1"></span>Residential</div>
                 <div class="legend-item"><span class="legend-color color-2"></span>Industrial</div>
@@ -30,13 +36,56 @@
                 <div class="legend-item"><span class="legend-color color-6"></span>Brick Kiln</div>
                 <div class="legend-item"><span class="legend-color color-7"></span>Sea Salt</div>
                 <div class="legend-item"><span class="legend-color color-8"></span>External</div>
+            </div> -->
+        
+        <div id="scroll-container">
+            <h3 style="text-align: center;">Reduce Source Contributions by</h2>
+            <div class="slider-group">
+                <label for="slider-transport"><span class="legend-color color-0"></span>Transport (<span class="value-label" id="value-slider-transport">0</span>%)</label>
+                <input type="range" id="slider-transport" min="0" max="100" value="0">
+                
+            </div>
+            <div class="slider-group">
+                <label for="slider-residential"><span class="legend-color color-1"></span>Residential(<span class="value-label" id="value-slider-residential">0</span>%)</label>
+                <input type="range" id="slider-residential" min="0" max="100" value="0">
+            </div>
+            <div class="slider-group">
+                <label for="slider-industrial"><span class="legend-color color-2"></span>Industrial(<span class="value-label" id="value-slider-industrial">0</span>%)</label>
+                <input type="range" id="slider-industrial" min="0" max="100" value="0">
+            </div>
+            <div class="slider-group">
+                <label for="slider-dust"><span class="legend-color color-3"></span>Dust(<span class="value-label" id="value-slider-dust">0</span>%)</label>
+                <input type="range" id="slider-dust" min="0" max="100" value="0">
+            </div>
+            <div class="slider-group">
+                <label for="slider-waste"><span class="legend-color color-4"></span>Waste Burning(<span class="value-label" id="value-slider-waste">0</span>%)</label>
+                <input type="range" id="slider-waste" min="0" max="100" value="0">
+            </div>
+            <div class="slider-group">
+                <label for="slider-diesel"><span class="legend-color color-5"></span>Diesel Gensets(<span class="value-label" id="value-slider-diesel">0</span>%)</label>
+                <input type="range" id="slider-diesel" min="0" max="100" value="0">
+            </div>
+            <div class="slider-group">
+                <label for="slider-brick"><span class="legend-color color-6"></span>Brick Kiln(<span class="value-label" id="value-slider-brick">0</span>%)</label>
+                <input type="range" id="slider-brick" min="0" max="100" value="0">
+            </div>
+            <div class="slider-group">
+                <label for="slider-sea"><span class="legend-color color-7"></span>Sea Salt(<span class="value-label" id="value-slider-sea">0</span>%)</label>
+                <input type="range" id="slider-sea" min="0" max="100" value="0">
+            </div>
+            <div class="slider-group">
+                <label for="slider-external"><span class="legend-color color-8"></span>External(<span class="value-label" id="value-slider-external">0</span>%)</label>
+                <input type="range" id="slider-external" min="0" max="100" value="0">
             </div>
         </div>
+    <div class="chart-block">
+                <h2>Source Apportionment with Controls</h2>
+                <svg id="adjusted-chart" viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet"></svg>
+            </div> 
+    
+        </div>
+    
         <div id="tooltip"></div>
-
-        <a id="apna_href" href="https://urbanemissions.info/wp-content/uploads/apna/docs/india_apna_2019_agartala.pdf" target="_blank">
-            <p> Download APnA Leaflet </p>
-        </a>
 
     </div>
     <footer>
@@ -44,11 +93,7 @@
     </footer>
  
     <script>
-        const svgElement = d3.select("svg");
-        const width = +svgElement.attr("width");
-        const height = +svgElement.attr("height");
-
-        const outerRadius = 250;//width / 2;
+        const outerRadius = 250;
         const innerRadius = 100;
         const color = d3.scaleOrdinal(d3.schemeCategory10);
         const arc = d3.arc().innerRadius(innerRadius).outerRadius(outerRadius);
@@ -58,10 +103,11 @@
                         .attr("transform", `translate(${outerRadius}, ${outerRadius})`);
 
         const legendContainer = d3.select("#legend");
+        const sources = ["Transport", "Residential", "Industrial", "Dust",
+                 "Waste", "Diesel Genset", "Brick Kiln", "Sea Salt", "External"];
+        let currentOriginalValues = [];
 
         d3.csv("data\\APnA_50airsheds_PM25_Source_Apportionment_CAMxOutputs.csv").then(data => {
-            const sources = ["Transport", "Residential", "Industrial", "Dust",
-                             "Waste", "Diesel Genset", "Brick Kiln", "Sea Salt", "External"];
             data.forEach(d => {
             sources.forEach(k => {
                 d[k] = d[k] ? parseFloat(d[k].replace('%','')) : 0;
@@ -87,6 +133,7 @@
             function updateChart(cityName) {
             const cityData = data.find(d => d.City === cityName);
             const pieData = sources.map(key => ({ source: key, value: cityData[key] }));
+            currentOriginalValues = pieData.map(d => d.value);
 
             //d3.select("#selectedHeading").text(`Source Apportionment: ${cityName}`);
 
@@ -120,7 +167,8 @@
                 .attr("text-anchor", "middle")
                 .style("display", d => d.data.value < 4 ? "none" : "block")
                 .attr("dy", "0.35em")
-                .text(d => d.data.value > 0 ? `${d.data.value}%` : '');
+                .text(d => d.data.value > 0 ? `${d.data.value}%` : '')
+                .attr("transform", d => `translate(${arc.centroid(d)})`);
 
             // TOOLTIP
             const tooltip = d3.select("#tooltip");
@@ -165,11 +213,115 @@
                 .attr("transform", d => `translate(${arc.centroid(d)})`)
                 .style("display", d => d.data.value < 4? "none" : "block")
                 .text(d => d.data.value > 0 ? `${d.data.value}%` : '');
-
-            newArcs.select("text")
-                .attr("transform", d => `translate(${arc.centroid(d)})`);
+            
+                drawAdjustedChart();
             }
         });
+
+        const sliderIds = [
+                        "slider-transport", "slider-residential", "slider-industrial", "slider-dust",
+                        "slider-waste", "slider-diesel", "slider-brick", "slider-sea", "slider-external"
+                    ];
+        sliderIds.forEach(id => {
+                                const slider = document.getElementById(id);
+                                const label = document.getElementById(`value-${id}`);
+                                slider.addEventListener("input", () => {
+                                        label.textContent = slider.value;
+                                        drawAdjustedChart(); // re-render pie chart if desired
+                                    });
+                        });
+
+        function drawAdjustedChart() {
+                const adjustedSvg = d3.select("#adjusted-chart");
+                const width = 500;
+                const height = 500;
+                const innerRadius = 100;
+                const outerRadius = 250;
+
+                const reductions = sliderIds.map(id => {
+                    const slider = document.getElementById(id);
+                    return slider ? parseFloat(slider.value) : 0;
+                });
+
+                const reduced = currentOriginalValues.map((val, i) => val * (1 - reductions[i] / 100));
+                const total = reduced.reduce((sum, val) => sum + val, 0);
+                const normalized = reduced.map(val => (val / total) * 100);
+
+                const data = sources.map((key, i) => ({
+                    source: key,
+                    value: normalized[i]
+                }));
+
+                const pie = d3.pie().value(d => d.value);
+                const arc = d3.arc().innerRadius(innerRadius).outerRadius(outerRadius);
+                const arcsData = pie(data);
+
+                // Create group if not already
+                let g = adjustedSvg.select("g");
+                if (g.empty()) {
+                    adjustedSvg.attr("viewBox", `0 0 ${width} ${height}`);
+                    g = adjustedSvg.append("g")
+                        .attr("transform", `translate(${width / 2}, ${height / 2})`);
+                }
+
+                // JOIN
+                const arcs = g.selectAll(".arc").data(arcsData);
+
+                // EXIT
+                arcs.exit().remove();
+
+                // ENTER
+                const newArcs = arcs.enter().append("g").attr("class", "arc");
+
+                newArcs.append("path")
+                    .attr("fill", (d, i) => color(i))
+                    .each(function(d) { this._current = d; }) // store initial state
+                    .on("mouseover", function (event, d) {
+                        d3.select("#tooltip")
+                            .style("display", "block")
+                            .html(`<strong>Pollution Source: ${d.data.source}</strong><br> Adjusted: ${d.data.value.toFixed(1)}%`);
+                    })
+                    .on("mousemove", function (event) {
+                        const tooltip = d3.select("#tooltip");
+                        const tooltipWidth = tooltip.node().offsetWidth;
+                        const tooltipHeight = tooltip.node().offsetHeight;
+                        const svgRect = adjustedSvg.node().getBoundingClientRect();
+                        const mouseX = event.clientX - svgRect.left;
+                        const mouseY = event.clientY - svgRect.top;
+                        const centerX = svgRect.width / 2;
+                        const isRightSide = mouseX > centerX;
+                        const pageX = event.pageX;
+                        const pageY = event.pageY;
+
+                        tooltip
+                            .style("left", isRightSide ? (pageX + 15) + "px" : (pageX - tooltipWidth - 15) + "px")
+                            .style("top", (pageY - tooltipHeight / 2) + "px");
+                    })
+                    .on("mouseout", function () {
+                        d3.select("#tooltip").style("display", "none");
+                    });
+
+                newArcs.append("text")
+                        .attr("class", "label")
+                        .attr("text-anchor", "middle")
+                        .style("display", d => d.data.value < 4 ? "none" : "block")
+                        .attr("dy", "0.35em")
+                        .text(d => d.data.value > 0 ? `${d.data.value}%` : '')
+                        .attr("transform", d => `translate(${arc.centroid(d)})`);
+                // UPDATE + ENTER MERGE
+                const allArcs = newArcs.merge(arcs);
+
+                allArcs.select("path")
+                        .transition().duration(750)
+                        .attr("d", arc)
+                        .attr("fill", (d, i) => color(i));
+
+                allArcs.select("text")
+                    .transition()
+                    .duration(750)
+                    .attr("transform", d => `translate(${arc.centroid(d)})`)
+                    .text(d => d.data.value > 4 ? `${d.data.value.toFixed(1)}%` : "");
+            }
     </script>
 
     <!-- <script src="selectcity.js"></script> -->
