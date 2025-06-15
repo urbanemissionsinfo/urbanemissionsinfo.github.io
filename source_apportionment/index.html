@@ -201,7 +201,7 @@
                 .style("display", d => d.data.value < 4? "none" : "block")
                 .text(d => d.data.value > 0 ? `${d.data.value}%` : '');
             
-                drawAdjustedChart();
+            drawAdjustedChart();
             }
         });
 
@@ -297,6 +297,7 @@
                     .transition()
                     .duration(750)
                     .attr("transform", d => `translate(${arc.centroid(d)})`)
+                    .style("display", d => d.data.value > 4 ? "block" : "none")
                     .text(d => d.data.value > 4 ? `${d.data.value.toFixed(1)}%` : "");
             }
     </script>
