@@ -1,0 +1,335 @@
+/* ================================================================
+   Goa Electricity Cost Calculator — Urban Emissions style
+   Brand: #164D12 (green), #f5f6f4 (light bg), #1a1a1a (dark text)
+   Fonts: Inter (UI), Source Serif 4 (headings)
+   ================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600;700&display=swap');
+
+/* ── Reset & base ─────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f5f6f4;
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+    color: #1a1a1a;
+    font-size: 14px;
+    line-height: 1.55;
+}
+
+/* ── Wrapper ──────────────────────────────────────────────── */
+.container {
+    max-width: 1160px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.10);
+    overflow: hidden;
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.header {
+    background: #164D12;
+    color: #fff;
+    padding: 20px 24px;
+}
+
+.header h1 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    margin-bottom: 4px;
+}
+
+.header p {
+    font-size: 13px;
+    opacity: 0.82;
+    font-weight: 400;
+}
+
+/* ── Main content ─────────────────────────────────────────── */
+.content { padding: 20px; }
+
+/* ── Two-column grid ──────────────────────────────────────── */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 12px;
+}
+
+@media (max-width: 900px) {
+    .grid { grid-template-columns: 1fr; }
+}
+
+/* ── Card sections ────────────────────────────────────────── */
+.section {
+    border: 1px solid #dde0db;
+    border-radius: 4px;
+    padding: 16px;
+    background: #fafafa;
+}
+
+.section h2 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #164D12;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border-bottom: 2px solid #164D12;
+    padding-bottom: 7px;
+    margin-bottom: 12px;
+}
+
+/* ── Info box ─────────────────────────────────────────────── */
+.info-box {
+    background: #eef3ee;
+    border-left: 3px solid #164D12;
+    padding: 10px 12px;
+    border-radius: 2px;
+    font-size: 12px;
+    color: #2d4f2b;
+    margin-bottom: 14px;
+    line-height: 1.5;
+}
+
+/* ── Appliance rows ───────────────────────────────────────── */
+.appliance-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 6px;
+    align-items: end;
+}
+
+@media (max-width: 600px) {
+    .appliance-row { grid-template-columns: 1fr 1fr; }
+    .appliance-row .appliance-name { grid-column: 1 / -1; }
+}
+
+.form-group { display: flex; flex-direction: column; }
+
+label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #5a5f58;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+input[type="number"],
+.custom-appliance-name-input {
+    padding: 7px 9px;
+    border: 1px solid #c8ccc6;
+    border-radius: 3px;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    background: #fff;
+    color: #1a1a1a;
+    transition: border-color .18s, box-shadow .18s;
+    width: 100%;
+}
+
+input[type="number"]:focus,
+.custom-appliance-name-input:focus {
+    outline: none;
+    border-color: #164D12;
+    box-shadow: 0 0 0 3px rgba(22, 77, 18, .12);
+}
+
+.appliance-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a1a;
+    padding: 7px 0 7px 0;
+    align-self: flex-end;
+}
+
+/* ── Calculated row (daily consumption) ──────────────────── */
+.calculated-row {
+    background: #eef3ee;
+    padding: 6px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #2d4f2b;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.calculated-value {
+    color: #164D12;
+    font-weight: 700;
+}
+
+/* ── Extra appliances section ─────────────────────────────── */
+#extra-appliances-container .appliance-block {
+    border: 1px dashed #c8ccc6;
+    border-radius: 3px;
+    padding: 10px 10px 4px;
+    margin-bottom: 10px;
+    background: #fff;
+    position: relative;
+}
+
+.remove-appliance-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #888;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0 4px;
+    transition: color .15s;
+}
+
+.remove-appliance-btn:hover { color: #b91c1c; }
+
+.add-appliance-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 1px solid #164D12;
+    color: #164D12;
+    padding: 7px 14px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background .18s, color .18s;
+    margin-top: 4px;
+}
+
+.add-appliance-btn:hover {
+    background: #164D12;
+    color: #fff;
+}
+
+/* ── Summary box ──────────────────────────────────────────── */
+.summary-box {
+    background: #eef3ee;
+    border: 1px solid #c4d9c2;
+    border-radius: 4px;
+    padding: 14px;
+    margin-bottom: 16px;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 7px;
+    font-size: 13px;
+}
+
+.summary-item:last-child { margin-bottom: 0; }
+
+.summary-label { color: #4a5248; font-weight: 500; }
+
+.summary-value {
+    font-weight: 700;
+    color: #1a1a1a;
+    font-size: 14px;
+}
+
+.summary-value.highlight {
+    color: #164D12;
+    font-size: 16px;
+}
+
+/* ── Pricing table ────────────────────────────────────────── */
+.pricing-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.pricing-table thead { background: #f0f3ef; }
+
+.pricing-table th {
+    padding: 6px 8px;
+    text-align: left;
+    font-weight: 700;
+    color: #164D12;
+    border-bottom: 2px solid #164D12;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.pricing-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid #e4e7e2;
+}
+
+.pricing-table tr:hover { background: #f5f8f5; }
+
+.range-label { color: #4a5248; font-weight: 600; }
+
+.rate { color: #164D12; font-weight: 700; }
+
+.units-used { color: #2d6a2b; font-weight: 600; }
+
+.cost { color: #b91c1c; font-weight: 700; }
+
+/* ── Total cost box ───────────────────────────────────────── */
+.total-cost {
+    background: #164D12;
+    color: #fff;
+    padding: 16px;
+    border-radius: 4px;
+    text-align: center;
+    margin-top: 16px;
+}
+
+.total-cost p {
+    font-size: 11px;
+    opacity: 0.82;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.total-cost .amount {
+    font-size: 34px;
+    font-weight: 700;
+    font-family: 'Source Serif 4', serif;
+}
+
+.total-cost .currency { font-size: 18px; }
+
+/* ── Buttons ──────────────────────────────────────────────── */
+.reset-btn {
+    background: #5a5f58;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: background .18s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 14px;
+}
+
+.reset-btn:hover { background: #3a3f38; }
+
+/* ── Section title spacing fix ────────────────────────────── */
+.section h2 + .info-box,
+.section h2 + .summary-box { margin-top: 0; }

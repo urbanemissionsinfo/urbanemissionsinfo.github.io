@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goa Electricity Cost Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Goa Electricity Cost Calculator</h1>
+            <p>Estimate your monthly electricity bill based on appliance usage · Tariff: GPDCL June 2026</p>
+        </div>
+
+        <div class="content">
+            <div class="grid">
+                <!-- ── Left Column: Appliance Input ────────────── -->
+                <div>
+                    <div class="section">
+                        <h2>Your Appliances</h2>
+                        <div class="info-box">
+                            Enter the number of units, hours used per day, and wattage for each appliance.
+                        </div>
+
+                        <!-- Bulbs -->
+                        <div class="appliance-row">
+                            <div class="appliance-name">Bulbs</div>
+                            <div class="form-group">
+                                <label>Units</label>
+                                <input type="number" id="bulbs-units" value="10" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Avg Hours/Day</label>
+                                <input type="number" id="bulbs-hours" value="5" min="0" step="0.5">
+                            </div>
+                            <div class="form-group">
+                                <label>Wattage/Unit</label>
+                                <input type="number" id="bulbs-wattage" value="10" min="0">
+                            </div>
+                        </div>
+                        <div class="calculated-row">
+                            <span>Daily Consumption</span>
+                            <span class="calculated-value" id="bulbs-consumption">0 kWh</span>
+                        </div>
+
+                        <!-- Fans -->
+                        <div class="appliance-row">
+                            <div class="appliance-name">Fans</div>
+                            <div class="form-group">
+                                <label>Units</label>
+                                <input type="number" id="fans-units" value="5" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Avg Hours/Day</label>
+                                <input type="number" id="fans-hours" value="10" min="0" step="0.5">
+                            </div>
+                            <div class="form-group">
+                                <label>Wattage/Unit</label>
+                                <input type="number" id="fans-wattage" value="50" min="0">
+                            </div>
+                        </div>
+                        <div class="calculated-row">
+                            <span>Daily Consumption</span>
+                            <span class="calculated-value" id="fans-consumption">0 kWh</span>
+                        </div>
+
+                        <!-- AC -->
+                        <div class="appliance-row">
+                            <div class="appliance-name">AC</div>
+                            <div class="form-group">
+                                <label>Units</label>
+                                <input type="number" id="ac-units" value="2" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Avg Hours/Day</label>
+                                <input type="number" id="ac-hours" value="8" min="0" step="0.5">
+                            </div>
+                            <div class="form-group">
+                                <label>Wattage/Unit</label>
+                                <input type="number" id="ac-wattage" value="1200" min="0">
+                            </div>
+                        </div>
+                        <div class="calculated-row">
+                            <span>Daily Consumption</span>
+                            <span class="calculated-value" id="ac-consumption">0 kWh</span>
+                        </div>
+
+                        <!-- Fridge -->
+                        <div class="appliance-row">
+                            <div class="appliance-name">Fridge</div>
+                            <div class="form-group">
+                                <label>Units</label>
+                                <input type="number" id="fridge-units" value="1" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Avg Hours/Day</label>
+                                <input type="number" id="fridge-hours" value="24" min="0" step="0.5">
+                            </div>
+                            <div class="form-group">
+                                <label>Wattage/Unit</label>
+                                <input type="number" id="fridge-wattage" value="100" min="0">
+                            </div>
+                        </div>
+                        <div class="calculated-row">
+                            <span>Daily Consumption</span>
+                            <span class="calculated-value" id="fridge-consumption">0 kWh</span>
+                        </div>
+
+                        <!-- TV -->
+                        <div class="appliance-row">
+                            <div class="appliance-name">TV</div>
+                            <div class="form-group">
+                                <label>Units</label>
+                                <input type="number" id="tv-units" value="1" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Avg Hours/Day</label>
+                                <input type="number" id="tv-hours" value="3" min="0" step="0.5">
+                            </div>
+                            <div class="form-group">
+                                <label>Wattage/Unit</label>
+                                <input type="number" id="tv-wattage" value="30" min="0">
+                            </div>
+                        </div>
+                        <div class="calculated-row">
+                            <span>Daily Consumption</span>
+                            <span class="calculated-value" id="tv-consumption">0 kWh</span>
+                        </div>
+
+                        <!-- ── Extra / custom appliances ──────── -->
+                        <div id="extra-appliances-container"></div>
+
+                        <button class="add-appliance-btn" onclick="addAppliance()">
+                            + Add Appliance
+                        </button>
+
+                        <br>
+                        <button class="reset-btn" onclick="resetCalculator()">Reset All</button>
+                    </div>
+                </div>
+
+                <!-- ── Right Column: Summary & Pricing ─────────── -->
+                <div>
+                    <div class="section">
+                        <h2>Consumption Summary</h2>
+                        <div class="summary-box">
+                            <div class="summary-item">
+                                <span class="summary-label">Total Daily Usage</span>
+                                <span class="summary-value" id="daily-total">0 kWh</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Total Monthly Usage (30 days)</span>
+                                <span class="summary-value" id="monthly-total">0 kWh</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">With 20% Misc. Usage</span>
+                                <span class="summary-value highlight" id="monthly-adjusted">0 kWh</span>
+                            </div>
+                        </div>
+
+                        <h2 style="margin-top:22px;">Tiered Pricing (June 2026)</h2>
+                        <table class="pricing-table">
+                            <thead>
+                                <tr>
+                                    <th>Range (kWh)</th>
+                                    <th>Rate (₹/kWh)</th>
+                                    <th>Your Usage</th>
+                                    <th>Cost (₹)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="range-label">0 – 100</td>
+                                    <td class="rate">₹1.95</td>
+                                    <td class="units-used" id="tier1-units">0</td>
+                                    <td class="cost" id="tier1-cost">₹0</td>
+                                </tr>
+                                <tr>
+                                    <td class="range-label">100 – 200</td>
+                                    <td class="rate">₹2.90</td>
+                                    <td class="units-used" id="tier2-units">0</td>
+                                    <td class="cost" id="tier2-cost">₹0</td>
+                                </tr>
+                                <tr>
+                                    <td class="range-label">200 – 300</td>
+                                    <td class="rate">₹3.90</td>
+                                    <td class="units-used" id="tier3-units">0</td>
+                                    <td class="cost" id="tier3-cost">₹0</td>
+                                </tr>
+                                <tr>
+                                    <td class="range-label">300 – 400</td>
+                                    <td class="rate">₹5.15</td>
+                                    <td class="units-used" id="tier4-units">0</td>
+                                    <td class="cost" id="tier4-cost">₹0</td>
+                                </tr>
+                                <tr>
+                                    <td class="range-label">&gt; 400</td>
+                                    <td class="rate">₹6.20</td>
+                                    <td class="units-used" id="tier5-units">0</td>
+                                    <td class="cost" id="tier5-cost">₹0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="total-cost">
+                            <p>Your Estimated Monthly Cost</p>
+                            <div class="amount"><span class="currency">₹</span><span id="final-cost">0</span></div>
+                            <p style="font-size:11px;margin-top:8px;opacity:.75;">Excludes fixed/standard charges</p>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /grid -->
+        </div><!-- /content -->
+    </div><!-- /container -->
+
+    <script>
+    // ── Custom appliance state ────────────────────────────────────
+    let extraCounter = 0;
+
+    function addAppliance() {
+        extraCounter++;
+        const id = 'extra-' + extraCounter;
+        const container = document.getElementById('extra-appliances-container');
+
+        const block = document.createElement('div');
+        block.className = 'appliance-block';
+        block.id = 'block-' + id;
+        block.innerHTML = `
+            <button class="remove-appliance-btn" onclick="removeAppliance('${id}')" title="Remove">✕</button>
+            <div class="appliance-row">
+                <div class="form-group" style="grid-column:1">
+                    <label>Appliance Name</label>
+                    <input type="text" class="custom-appliance-name-input"
+                           id="${id}-name" placeholder="e.g. Washing Machine"
+                           oninput="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>Units</label>
+                    <input type="number" id="${id}-units" value="1" min="0" oninput="calculate()" onchange="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>Avg Hours/Day</label>
+                    <input type="number" id="${id}-hours" value="1" min="0" step="0.5" oninput="calculate()" onchange="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>Wattage/Unit</label>
+                    <input type="number" id="${id}-wattage" value="100" min="0" oninput="calculate()" onchange="calculate()">
+                </div>
+            </div>
+            <div class="calculated-row">
+                <span id="${id}-label">Custom Appliance</span>
+                <span class="calculated-value" id="${id}-consumption">0 kWh</span>
+            </div>
+        `;
+        container.appendChild(block);
+        calculate();
+    }
+
+    function removeAppliance(id) {
+        const block = document.getElementById('block-' + id);
+        if (block) block.remove();
+        calculate();
+    }
+
+    function getExtraIds() {
+        const blocks = document.querySelectorAll('#extra-appliances-container .appliance-block');
+        return Array.from(blocks).map(b => b.id.replace('block-', ''));
+    }
+
+    // ── Core inputs (built-in appliances) ────────────────────────
+    const builtInIds = [
+        'bulbs-units','bulbs-hours','bulbs-wattage',
+        'fans-units','fans-hours','fans-wattage',
+        'ac-units','ac-hours','ac-wattage',
+        'fridge-units','fridge-hours','fridge-wattage',
+        'tv-units','tv-hours','tv-wattage'
+    ];
+
+    builtInIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', calculate);
+            el.addEventListener('change', calculate);
+        }
+    });
+
+    // ── Calculation ───────────────────────────────────────────────
+    function getKwh(prefix) {
+        const u = parseFloat(document.getElementById(prefix + '-units')?.value)   || 0;
+        const h = parseFloat(document.getElementById(prefix + '-hours')?.value)   || 0;
+        const w = parseFloat(document.getElementById(prefix + '-wattage')?.value) || 0;
+        return (u * h * w) / 1000;
+    }
+
+    function calculate() {
+        // Built-in appliances
+        const bulbsC  = getKwh('bulbs');
+        const fansC   = getKwh('fans');
+        const acC     = getKwh('ac');
+        const fridgeC = getKwh('fridge');
+        const tvC     = getKwh('tv');
+
+        document.getElementById('bulbs-consumption').textContent  = bulbsC.toFixed(2)  + ' kWh';
+        document.getElementById('fans-consumption').textContent   = fansC.toFixed(2)   + ' kWh';
+        document.getElementById('ac-consumption').textContent     = acC.toFixed(2)     + ' kWh';
+        document.getElementById('fridge-consumption').textContent = fridgeC.toFixed(2) + ' kWh';
+        document.getElementById('tv-consumption').textContent     = tvC.toFixed(2)     + ' kWh';
+
+        // Extra appliances
+        let extraTotal = 0;
+        getExtraIds().forEach(id => {
+            const c = getKwh(id);
+            extraTotal += c;
+            const nameEl = document.getElementById(id + '-name');
+            const labelEl = document.getElementById(id + '-label');
+            const consEl  = document.getElementById(id + '-consumption');
+            if (labelEl && nameEl) {
+                const name = nameEl.value.trim() || 'Custom Appliance';
+                labelEl.textContent = name + ' — Daily';
+            }
+            if (consEl) consEl.textContent = c.toFixed(2) + ' kWh';
+        });
+
+        // Totals
+        const dailyTotal     = bulbsC + fansC + acC + fridgeC + tvC + extraTotal;
+        const monthlyTotal   = dailyTotal * 30;
+        const monthlyAdjusted = monthlyTotal * 1.2;
+
+        document.getElementById('daily-total').textContent     = dailyTotal.toFixed(2)      + ' kWh';
+        document.getElementById('monthly-total').textContent   = monthlyTotal.toFixed(2)    + ' kWh';
+        document.getElementById('monthly-adjusted').textContent = monthlyAdjusted.toFixed(2) + ' kWh';
+
+        // Tiered pricing
+        const tiers = [
+            { rate: 1.95, cap: 100 },
+            { rate: 2.90, cap: 200 },
+            { rate: 3.90, cap: 300 },
+            { rate: 5.15, cap: 400 },
+            { rate: 6.20, cap: Infinity }
+        ];
+
+        let remaining = monthlyAdjusted;
+        let prev = 0;
+        let totalCost = 0;
+
+        tiers.forEach((tier, i) => {
+            const bandSize = tier.cap === Infinity ? remaining : Math.min(remaining, tier.cap - prev);
+            const units = Math.max(0, bandSize);
+            const cost  = units * tier.rate;
+            totalCost += cost;
+            remaining = Math.max(0, remaining - units);
+            prev = tier.cap === Infinity ? prev : tier.cap;
+
+            document.getElementById('tier' + (i+1) + '-units').textContent = units.toFixed(2);
+            document.getElementById('tier' + (i+1) + '-cost').textContent  = '₹' + cost.toFixed(2);
+        });
+
+        document.getElementById('final-cost').textContent = totalCost.toFixed(2);
+    }
+
+    // ── Reset ─────────────────────────────────────────────────────
+    function resetCalculator() {
+        const defaults = {
+            'bulbs-units':5,'bulbs-hours':5,'bulbs-wattage':10,
+            'fans-units':5,'fans-hours':10,'fans-wattage':50,
+            'ac-units':2,'ac-hours':8,'ac-wattage':1200,
+            'fridge-units':1,'fridge-hours':24,'fridge-wattage':100,
+            'tv-units':1,'tv-hours':3,'tv-wattage':30
+        };
+        Object.entries(defaults).forEach(([id, val]) => {
+            const el = document.getElementById(id);
+            if (el) el.value = val;
+        });
+        // Remove all extra appliances
+        document.getElementById('extra-appliances-container').innerHTML = '';
+        extraCounter = 0;
+        calculate();
+    }
+
+    // ── Init ──────────────────────────────────────────────────────
+    calculate();
+    </script>
+</body>
+</html>
