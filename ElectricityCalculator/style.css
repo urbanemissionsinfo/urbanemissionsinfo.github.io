@@ -285,6 +285,30 @@ input[type="number"]:focus,
 
 .cost { color: #b91c1c; font-weight: 700; }
 
+/* ── Editable tariff table inputs ─────────────────────────── */
+.pricing-table td { vertical-align: middle; }
+
+.tariff-input {
+    width: 72px;
+    padding: 5px 6px;
+    border: 1px solid #c8ccc6;
+    border-radius: 3px;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    background: #fff;
+    color: #1a1a1a;
+    transition: border-color .18s, box-shadow .18s;
+}
+
+.tariff-input:focus {
+    outline: none;
+    border-color: #164D12;
+    box-shadow: 0 0 0 3px rgba(22, 77, 18, .12);
+}
+
+#tariff-table th:last-child,
+#tariff-table td:last-child { width: 28px; text-align: center; }
+
 /* ── Total cost box ───────────────────────────────────────── */
 .total-cost {
     background: #164D12;

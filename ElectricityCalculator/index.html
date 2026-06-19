@@ -9,8 +9,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Goa Electricity Cost Calculator</h1>
-            <p>Estimate your monthly electricity bill based on appliance usage · Tariff: GPDCL June 2026</p>
+            <h1>Electricity Cost Calculator</h1>
+            <p>Estimate your monthly electricity bill based on appliance usage · Tariff slabs are editable</p>
         </div>
 
         <div class="content">
@@ -159,49 +159,33 @@
                             </div>
                         </div>
 
-                        <h2 style="margin-top:22px;">Tiered Pricing (June 2026)</h2>
-                        <table class="pricing-table">
+                        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-top:22px;">
+                            <h2 style="margin-top:0;">Tiered Pricing</h2>
+                        </div>
+                        <div class="info-box" style="margin-bottom:10px;">
+                            The default slab boundaries are Goa GPDCL June 2026 tariffs. <br>
+                            Edit the slab boundaries and rates below to match the latest tariff order. Leave the last row's "To" blank for an open-ended top slab. Costs recompute automatically.
+                             
+                        </div>
+                        <table class="pricing-table" id="tariff-table">
                             <thead>
                                 <tr>
-                                    <th>Range (kWh)</th>
+                                    <th>From (kWh)</th>
+                                    <th>To (kWh)</th>
                                     <th>Rate (₹/kWh)</th>
                                     <th>Your Usage</th>
                                     <th>Cost (₹)</th>
+                                    <th></th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="range-label">0 – 100</td>
-                                    <td class="rate">₹1.95</td>
-                                    <td class="units-used" id="tier1-units">0</td>
-                                    <td class="cost" id="tier1-cost">₹0</td>
-                                </tr>
-                                <tr>
-                                    <td class="range-label">100 – 200</td>
-                                    <td class="rate">₹2.90</td>
-                                    <td class="units-used" id="tier2-units">0</td>
-                                    <td class="cost" id="tier2-cost">₹0</td>
-                                </tr>
-                                <tr>
-                                    <td class="range-label">200 – 300</td>
-                                    <td class="rate">₹3.90</td>
-                                    <td class="units-used" id="tier3-units">0</td>
-                                    <td class="cost" id="tier3-cost">₹0</td>
-                                </tr>
-                                <tr>
-                                    <td class="range-label">300 – 400</td>
-                                    <td class="rate">₹5.15</td>
-                                    <td class="units-used" id="tier4-units">0</td>
-                                    <td class="cost" id="tier4-cost">₹0</td>
-                                </tr>
-                                <tr>
-                                    <td class="range-label">&gt; 400</td>
-                                    <td class="rate">₹6.20</td>
-                                    <td class="units-used" id="tier5-units">0</td>
-                                    <td class="cost" id="tier5-cost">₹0</td>
-                                </tr>
+                            <tbody id="tariff-tbody">
+                                <!-- rows injected by JS -->
                             </tbody>
                         </table>
+                        <div style="display:flex; gap:8px; margin-top:10px;">
+                            <button class="add-appliance-btn" type="button" onclick="addTariffRow()">+ Add Slab</button>
+                            <button class="reset-btn" type="button" style="margin-top:0;" onclick="resetTariff()">Reset Tariff to Default</button>
+                        </div>
 
                         <div class="total-cost">
                             <p>Your Estimated Monthly Cost</p>
@@ -293,6 +277,77 @@
         return (u * h * w) / 1000;
     }
 
+    // ── Editable tariff table ───────────────────────────────────────
+    const DEFAULT_TARIFF = [
+        { from: 0,   to: 100,  rate: 1.95 },
+        { from: 100, to: 200,  rate: 2.90 },
+        { from: 200, to: 300,  rate: 3.90 },
+        { from: 300, to: 400,  rate: 5.15 },
+        { from: 400, to: null, rate: 6.20 }   // null "to" = open-ended top slab
+    ];
+
+    let tariffCounter = 0;
+
+    function renderTariffTable(rows) {
+        const tbody = document.getElementById('tariff-tbody');
+        tbody.innerHTML = '';
+        tariffCounter = 0;
+        rows.forEach(row => addTariffRow(row.from, row.to, row.rate));
+    }
+
+    function addTariffRow(fromVal, toVal, rateVal) {
+        tariffCounter++;
+        const id = 'slab-' + tariffCounter;
+        const tbody = document.getElementById('tariff-tbody');
+
+        if (fromVal === undefined) {
+            const rows = getTariffIds();
+            const lastId = rows[rows.length - 1];
+            const lastTo = lastId ? document.getElementById(lastId + '-to').value : '';
+            fromVal = lastTo !== '' ? parseFloat(lastTo) : 0;
+        }
+        if (toVal === undefined) toVal = null;
+        if (rateVal === undefined) rateVal = 0;
+
+        const tr = document.createElement('tr');
+        tr.id = 'row-' + id;
+        tr.innerHTML = `
+            <td><input type="number" class="tariff-input" id="${id}-from" value="${fromVal}" min="0" step="1" oninput="calculate()" onchange="calculate()"></td>
+            <td><input type="number" class="tariff-input" id="${id}-to" value="${toVal === null ? '' : toVal}" min="0" step="1" placeholder="no limit" oninput="calculate()" onchange="calculate()"></td>
+            <td><input type="number" class="tariff-input" id="${id}-rate" value="${rateVal}" min="0" step="0.01" oninput="calculate()" onchange="calculate()"></td>
+            <td class="units-used" id="${id}-units">0</td>
+            <td class="cost" id="${id}-cost">₹0</td>
+            <td><button class="remove-appliance-btn" style="position:static;" onclick="removeTariffRow('${id}')" title="Remove slab">✕</button></td>
+        `;
+        tbody.appendChild(tr);
+        calculate();
+    }
+
+    function removeTariffRow(id) {
+        const row = document.getElementById('row-' + id);
+        if (row) row.remove();
+        calculate();
+    }
+
+    function getTariffIds() {
+        const rows = document.querySelectorAll('#tariff-tbody tr');
+        return Array.from(rows).map(r => r.id.replace('row-', ''));
+    }
+
+    function resetTariff() {
+        renderTariffTable(DEFAULT_TARIFF);
+    }
+
+    function readTariffSlabs() {
+        return getTariffIds().map(id => {
+            const from = parseFloat(document.getElementById(id + '-from').value) || 0;
+            const toRaw = document.getElementById(id + '-to').value;
+            const to = toRaw === '' ? Infinity : (parseFloat(toRaw) || 0);
+            const rate = parseFloat(document.getElementById(id + '-rate').value) || 0;
+            return { id, from, to, rate };
+        }).sort((a, b) => a.from - b.from);
+    }
+
     function calculate() {
         // Built-in appliances
         const bulbsC  = getKwh('bulbs');
@@ -331,29 +386,21 @@
         document.getElementById('monthly-total').textContent   = monthlyTotal.toFixed(2)    + ' kWh';
         document.getElementById('monthly-adjusted').textContent = monthlyAdjusted.toFixed(2) + ' kWh';
 
-        // Tiered pricing
-        const tiers = [
-            { rate: 1.95, cap: 100 },
-            { rate: 2.90, cap: 200 },
-            { rate: 3.90, cap: 300 },
-            { rate: 5.15, cap: 400 },
-            { rate: 6.20, cap: Infinity }
-        ];
-
-        let remaining = monthlyAdjusted;
-        let prev = 0;
+        // ── Tiered pricing — fully driven by the editable tariff table ──
+        const slabs = readTariffSlabs();
         let totalCost = 0;
 
-        tiers.forEach((tier, i) => {
-            const bandSize = tier.cap === Infinity ? remaining : Math.min(remaining, tier.cap - prev);
-            const units = Math.max(0, bandSize);
-            const cost  = units * tier.rate;
+        slabs.forEach(slab => {
+            const bandWidth = slab.to === Infinity ? Infinity : Math.max(0, slab.to - slab.from);
+            const usageAboveFrom = Math.max(0, monthlyAdjusted - slab.from);
+            const units = Math.max(0, Math.min(usageAboveFrom, bandWidth));
+            const cost  = units * slab.rate;
             totalCost += cost;
-            remaining = Math.max(0, remaining - units);
-            prev = tier.cap === Infinity ? prev : tier.cap;
 
-            document.getElementById('tier' + (i+1) + '-units').textContent = units.toFixed(2);
-            document.getElementById('tier' + (i+1) + '-cost').textContent  = '₹' + cost.toFixed(2);
+            const unitsEl = document.getElementById(slab.id + '-units');
+            const costEl  = document.getElementById(slab.id + '-cost');
+            if (unitsEl) unitsEl.textContent = units.toFixed(2);
+            if (costEl)  costEl.textContent  = '₹' + cost.toFixed(2);
         });
 
         document.getElementById('final-cost').textContent = totalCost.toFixed(2);
@@ -379,6 +426,7 @@
     }
 
     // ── Init ──────────────────────────────────────────────────────
+    renderTariffTable(DEFAULT_TARIFF);
     calculate();
     </script>
 </body>
