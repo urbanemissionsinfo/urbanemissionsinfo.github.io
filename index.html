@@ -1,27 +1,378 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Urban Emissions</title>
-  <link rel="icon" href="ue.jpeg" type="image/jpeg">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Urban Emissions — Projects</title>
+<link rel="icon" href="ue.jpeg" type="image/jpeg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green: #164D12;
+    --green-soft: #2f6b29;
+    --bg: #f5f6f4;
+    --card: #ffffff;
+    --ink: #1b1f1a;
+    --ink-soft: #5b635a;
+    --line: #dfe3dc;
+    --mono: 'Roboto Mono', monospace;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a{ color: inherit; }
+
+  /* ---------- Header / Hero ---------- */
+  header{
+    padding: 5rem 6vw 3.5rem;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .eyebrow{
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green-soft);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .eyebrow::before{
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    display: inline-block;
+    box-shadow: 0 0 0 3px rgba(22,77,18,0.12);
+  }
+
+  h1{
+    font-family: 'Source Serif 4', serif;
+    font-weight: 700;
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    line-height: 1.05;
+    margin: 0 0 1.2rem;
+    max-width: 16ch;
+    color: var(--green);
+  }
+
+  header p.lede{
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 52ch;
+    margin: 0 0 0.5rem;
+  }
+
+  header .home-link{
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1.6rem;
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--green);
+    text-decoration: none;
+    border-bottom: 1px solid var(--green);
+    padding-bottom: 2px;
+    transition: opacity 0.15s ease;
+  }
+  header .home-link:hover{ opacity: 0.65; }
+
+  /* Signature: particulate field, representing PM readings, drifting behind the hero */
+  .particulate{
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .particulate span{
+    position: absolute;
+    border-radius: 50%;
+    background: var(--green);
+    opacity: 0.08;
+  }
+  header > *:not(.particulate){ position: relative; z-index: 1; }
+
+  @media (prefers-reduced-motion: no-preference){
+    .particulate span{ animation: drift linear infinite; }
+  }
+  @keyframes drift{
+    from{ transform: translateY(0); }
+    to{ transform: translateY(-40px); }
+  }
+
+  /* ---------- Section label ---------- */
+  .section-label{
+    padding: 3rem 6vw 0;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .section-label h2{
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .section-label .count{
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- Project grid ---------- */
+  main{
+    padding: 1.5rem 6vw 6rem;
+  }
+
+  .grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.1rem;
+    margin-top: 1.2rem;
+  }
+
+  .card{
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1.6rem 1.6rem 1.5rem;
+    text-decoration: none;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+    position: relative;
+  }
+
+  .card:hover{
+    border-color: var(--green);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px -12px rgba(22,77,18,0.28);
+  }
+
+  .card .idx{
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--green-soft);
+    letter-spacing: 0.06em;
+  }
+
+  .card h3{
+    font-family: 'Source Serif 4', serif;
+    font-weight: 600;
+    font-size: 1.28rem;
+    line-height: 1.28;
+    margin: 0;
+    color: var(--green);
+  }
+
+  .card p{
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0;
+    flex-grow: 1;
+  }
+
+  .card .go{
+    font-family: var(--mono);
+    font-size: 0.76rem;
+    color: var(--green);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.3rem;
+  }
+  .card .go .arrow{ transition: transform 0.18s ease; }
+  .card:hover .go .arrow{ transform: translateX(3px); }
+
+  .card.wip{
+    opacity: 0.55;
+    filter: grayscale(0.3);
+  }
+  .card.wip::after{
+    content: 'in progress';
+    position: absolute;
+    top: 1.6rem;
+    right: 1.6rem;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.06em;
+  }
+
+  /* ---------- Footer ---------- */
+  footer{
+    border-top: 1px solid var(--line);
+    padding: 2.2rem 6vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+  }
+  footer a{ color: var(--green); text-decoration: none; border-bottom: 1px solid transparent; }
+  footer a:hover{ border-bottom-color: var(--green); }
+
+  @media (max-width: 640px){
+    header{ padding: 3.5rem 6vw 2.5rem; }
+    .section-label{ padding: 2.2rem 6vw 0; flex-direction: column; align-items: flex-start; gap: 0.3rem; }
+    main{ padding: 1rem 6vw 4rem; }
+  }
+</style>
 </head>
-
 <body>
-<h1> Urban Emissions </h1> 
-<p>This new website is still under construction. Current projects are:</p>
 
-<ul>
-<li><a href="forecasts/index.html">City Forecasts</a>: Meterological forecasts for different cities</li>
-<li><a href="source_apportionment/index.html">Source apportionment</a>: Source apportionment for different cities</li>
-<li><a href="https://urbanemissionsinfo.github.io/airqualityquiz/">Air Quality Quiz</a>: Test your knowledge on air quality.</li>
-<li><a href="https://urbanemissionsinfo.github.io/Benford/">How to spot anomalies in AQI data? </a>:  An application of Benford's law.</li>
-<li><a href="https://urbanemissionsinfo.github.io/AQI_bulletins/"> Air Quality Index (AQI) Bulletins analysis </a>:  for Indian Cities.</li>
-<li><a href="https://urbanemissionsinfo.github.io/SolvingDelhiPollution/">40 by 40</a>: Emission changes required for Delhi's PM2.5 to reach 40 μg/m3 by 2040.</li>
-<li><a href="https://urbanemissionsinfo.github.io/ElectricityCalculator/">Electricity bill calculator</a></li>
-<li><a href="https://urbanemissionsinfo.github.io/TransportEmissions/">Vehicular Air Pollution Information System (VAPIS)</a>:Calculator to estimate emissions from transport sector</li>
-<!-- <li><a href="https://urbanemissionsinfo.github.io/MonitoringNeeds/">Monitoring Needs</a>: Estimate the number of air quality monitors required in any airshed.</li> -->
+<header>
+  <div class="particulate" id="particulate"></div>
+  <div class="eyebrow">Urban Emissions Info — Project Index</div>
+  <h1>Tools for reading the air over India's cities.</h1>
+  <p class="lede">Calculators, forecasts, and open analyses built to make emissions, air quality, and monitoring data easier to see and use.</p>
+  <a class="home-link" href="https://urbanemissions.info/" target="_blank" rel="noopener">← urbanemissions.info</a>
+</header>
 
-</ul>
+<div class="section-label">
+  <h2>Current projects</h2>
+  <span class="count">08 listed</span>
+</div>
 
-<p>The main urbanemissions website is <a href="https://urbanemissions.info/">available here</a>.</p>
+<main>
+  <div class="grid">
+
+    <a class="card" href="https://urbanemissionsinfo.github.io/AQNEST/global.html">
+      <span class="idx">Monitoring</span>
+      <h3>AQ-NEST: Air Quality Network Evaluation & Siting Tool.</h3>
+      <p>This tool calculates minimum air quality monitors required in a defined area and evaluates the monitor network coverage</p>
+      <span class="go">Open <span class="arrow">→</span></span>
+    </a>
+
+    <a class="card" href="https://urbanemissionsinfo.github.io/AQCourse/">
+      <span class="idx">Awareness</span>
+      <h3>Course on Air Quality Analysis and Management</h3>
+      <p>A tangible data course on AQI, pollution, emission inventories and other fundamental concepts in Air Quality Management</p>
+      <span class="go">Open <span class="arrow">→</span></span>
+    </a>
+
+    <a class="card" href="https://urbanemissionsinfo.github.io/TransportEmissions/" target="_blank" rel="noopener">
+      <span class="idx">Emissions</span>
+      <h3>VAPIS — Vehicular Air Pollution Information System</h3>
+      <p>Estimate transport-sector emissions using four CPCB-style methods.</p>
+      <span class="go">Open <span class="arrow">→</span></span>
+    </a>
+
+    <a class="card" href="https://urbanemissionsinfo.github.io/airqualityquiz/" target="_blank" rel="noopener">
+      <span class="idx">Awareness</span>
+      <h3>Air Quality Quiz</h3>
+      <p>Test your knowledge on air quality.</p>
+      <span class="go">Open <span class="arrow">→</span></span>
+    </a>
+
+    <a class="card" href="https://urbanemissionsinfo.github.io/Benford/" target="_blank" rel="noopener">
+      <span class="idx">Monitoring</span>
+      <h3>Spotting anomalies in AQI data</h3>
+      <p>An application of Benford's law to air quality monitoring data.</p>
+      <span class="go">Open <span class="arrow">→</span></span>
+    </a>
+
+    <a class="card" href="https://urbanemissionsinfo.github.io/AQI_bulletins/" target="_blank" rel="noopener">
+      <span class="idx">Monitoring</span>
+      <h3>AQI Bulletins Analysis</h3>
+      <p>Analysis of Air Quality Index bulletins for Indian cities.</p>
+      <span class="go">Open <span class="arrow">→</span></span>
+    </a>
+
+    <a class="card" href="https://urbanemissionsinfo.github.io/SolvingDelhiPollution/" target="_blank" rel="noopener">
+      <span class="idx">Modeling</span>
+      <h3>40 by 40</h3>
+      <p>Emission changes required for Delhi's PM2.5 to reach 40 μg/m³ by 2040.</p>
+      <span class="go">Open <span class="arrow">→</span></span>
+    </a>
+
+    <a class="card" href="forecasts/index.html">
+      <span class="idx">Modeling</span>
+      <h3>City Forecasts</h3>
+      <p>Meteorological forecasts for different cities.</p>
+      <span class="go">Open <span class="arrow">→</span></span>
+    </a>
+
+
+
+    <a class="card" href="source_apportionment/index.html">
+      <span class="idx">Emissions</span>
+      <h3>Source Apportionment</h3>
+      <p>Breaking down pollution sources for different cities.</p>
+      <span class="go">Open <span class="arrow">→</span></span>
+    </a>
+
+    
+
+    <a class="card" href="https://urbanemissionsinfo.github.io/ElectricityCalculator/" target="_blank" rel="noopener">
+      <span class="idx">Tools</span>
+      <h3>Electricity Bill Calculator</h3>
+      <p>Estimate electricity costs with custom appliances and editable tariff slabs.</p>
+      <span class="go">Open <span class="arrow">→</span></span>
+    </a>
+
+    <!--
+    <div class="card wip">
+      <span class="idx">09 — Monitoring</span>
+      <h3>Monitoring Needs</h3>
+      <p>Estimate the number of air quality monitors required in any airshed.</p>
+    </div>
+    -->
+
+  </div>
+</main>
+
+<footer>
+  <span>Urban Emissions Info</span>
+  <span>Repository of Air Pollution Information</span>
+  <a href="https://urbanemissions.info/" target="_blank" rel="noopener">urbanemissions.info ↗</a>
+</footer>
+
+<script>
+  // Signature element: a quiet field of drifting particulate dots behind the hero,
+  // sized and placed with slight randomness to suggest a PM2.5 reading rather than decoration.
+  const field = document.getElementById('particulate');
+  const count = window.innerWidth < 640 ? 18 : 34;
+  for(let i=0;i<count;i++){
+    const dot = document.createElement('span');
+    const size = 2 + Math.random()*5;
+    dot.style.width = size + 'px';
+    dot.style.height = size + 'px';
+    dot.style.left = Math.random()*100 + '%';
+    dot.style.top = Math.random()*100 + '%';
+    dot.style.animationDuration = (14 + Math.random()*16) + 's';
+    dot.style.animationDelay = (-Math.random()*20) + 's';
+    field.appendChild(dot);
+  }
+</script>
+
 </body>
 </html>
